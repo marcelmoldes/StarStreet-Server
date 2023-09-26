@@ -3,13 +3,13 @@ const sequelize = new Sequelize("StarStreet", "root", "password", {
   dialect: "mysql",
 });
 
-const Users = sequelize.define("users", {
-  user_name: DataTypes.ARRAY,
+const Clients = sequelize.define("clients", {
+  client_name: DataTypes.STRING,
   phone: DataTypes.NUMBER,
-  email: DataTypes.ARRAY,
-  password: DataTypes.ARRAY,
+  email: DataTypes.STRING,
+  password: DataTypes.STRING,
 });
 
 module.exports = {
-  Users,
+  Clients,
 };
