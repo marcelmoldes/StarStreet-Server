@@ -10,8 +10,9 @@ app.use(express.json());
 app.use(cookieParser());
 
 require("./src/routes/clients.js")(app);
-require("./src/routes/clothing.js")(app);
+require("./src/routes/categories.js")(app);
 require("./src/routes/items.js")(app);
+require("./src/routes/favorites.js")(app);
 
 
 

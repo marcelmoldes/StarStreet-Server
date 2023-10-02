@@ -5,7 +5,6 @@ const sequelize = new Sequelize("StarStreet", "root", "password", {
 
 const Clients = sequelize.define("clients", {
   client_name: DataTypes.STRING,
-  phone: DataTypes.NUMBER,
   email: DataTypes.STRING,
   password: DataTypes.STRING,
 });

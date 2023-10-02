@@ -1,4 +1,4 @@
-const { Clients } = require("../models/Users.js");
+const { Clients } = require("../models/Clients.js");
 const jwt = require("jsonwebtoken");
 const jwtSecret = "290eu38f9hcefhsfaebesufbeaufeuyfgr8ygagtvdbkloigruoi";
 
@@ -16,12 +16,8 @@ module.exports = {
           client_name: req.body.client_name,
         },
       });
-      const phoneFound = await Clients.findOne({
-        where: {
-          phone: req.body.phone,
-        },
-      });
-      if (emailFound || clientFound || phoneFound) {
+    
+      if (emailFound || clientFound) {
         return res.send({
           success: false,
           error: "This user already exists!",
