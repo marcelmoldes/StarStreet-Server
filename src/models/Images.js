@@ -2,12 +2,11 @@ const { Sequelize, DataTypes } = require("sequelize");
 const sequelize = new Sequelize("StarStreet", "root", "password", {
   dialect: "mysql",
 });
-
-const Favorites = sequelize.define("favorites", {
-  client_id: DataTypes.NUMBER,
+const Images = sequelize.define("images", {
+  url: DataTypes.STRING,
   item_id: DataTypes.NUMBER,
 });
 
 module.exports = {
-  Favorites,
+  Images,
 };

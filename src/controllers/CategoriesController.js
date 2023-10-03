@@ -6,6 +6,7 @@ const sequelize = new Sequelize("StarStreet", "root", "password", {
   dialect: "mysql",
 });
 const jwt = require("jsonwebtoken");
+const { Images } = require("../models/Images.js");
 
 const jwtSecret = "290eu38f9hcefhsfaebesufbeaufeuyfgr8ygagtvdbkloigruoi";
 
@@ -63,6 +64,7 @@ module.exports = {
           where: {
             category_id: category.id,
           },
+          include: Images,
           attributes: {
             include: [
               [
@@ -81,7 +83,8 @@ module.exports = {
         items = await Items.findAll({
           where: {
             category_id: category.id,
-          }
+          },
+          include: Images
         });
       }
       return res.send({
