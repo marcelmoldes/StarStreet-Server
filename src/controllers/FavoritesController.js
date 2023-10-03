@@ -95,7 +95,7 @@ module.exports = {
       const favoriteRemoved = await Favorites.findOne({
         where: {
           client_id: client.id,
-          item_id: req.params.id,
+          item_id: req.params.item_id,
         },
       });
       if (!favoriteRemoved) {
@@ -106,7 +106,7 @@ module.exports = {
       }
       const remove = await Favorites.destroy({
         where: {
-          id: req.params.id,
+          item_id: req.params.item_id,
           client_id: client.id,
         },
       });
@@ -117,7 +117,7 @@ module.exports = {
     } catch (error) {
       return res.send({
         success: false,
-        error: error,
+        error: error.message,
       });
     }
   },
