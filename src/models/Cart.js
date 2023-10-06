@@ -4,19 +4,21 @@ const sequelize = new Sequelize("StarStreet", "root", "password", {
   dialect: "mysql",
 });
 
-const Favorites = sequelize.define("favorites", {
+const Cart = sequelize.define("carts", {
   client_id: DataTypes.NUMBER,
   item_id: DataTypes.NUMBER,
+  quantity: DataTypes.NUMBER,
 });
 
-Favorites.belongsTo(Items, {
-  foreignKey: {
-    name: "item_id"
-  }
-})
-
+Cart.belongsTo(Items, {
+    foreignKey: {
+      name: "item_id"
+    }
+  })
+  
+  
 
 
 module.exports = {
-  Favorites,
+  Cart,
 };

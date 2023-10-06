@@ -1,12 +1,10 @@
-const { Favorites } = require("../models/Favorites.js");
-const { Items } = require("../models/Items.js");
+const { Cart } = require("../models/Cart.js");
 const jwt = require("jsonwebtoken");
-const { Images } = require("../models/Images.js");
-
 const jwtSecret = "290eu38f9hcefhsfaebesufbeaufeuyfgr8ygagtvdbkloigruoi";
+const { Items } = require("../models/Items.js");
 
 module.exports = {
-  async getFavorites(req, res) {
+  async getCart(req, res) {
     try {
       const authorizationHeader = req.headers.authorization;
       const token = authorizationHeader.replace("Bearer ", "");
@@ -16,21 +14,17 @@ module.exports = {
           success: false,
         });
       }
-      const favorites = await Favorites.findAll({
+      const cart = await Cart.findAll({
         where: {
           client_id: client.id,
         },
         include: {
           model: Items,
-          include: {
-            model: Images,
-            
-          },
         },
       });
       return res.send({
         success: true,
-        favorites,
+        cart,
       });
     } catch (error) {
       return res.send({
@@ -39,7 +33,7 @@ module.exports = {
       });
     }
   },
-  async createFavorite(req, res) {
+  async createCart(req, res) {
     try {
       const authorizationHeader = req.headers.authorization;
       const token = authorizationHeader.replace("Bearer ", "");
@@ -49,74 +43,82 @@ module.exports = {
           success: false,
         });
       }
-      // Check it if Item exists or not
-      const itemExists = await Items.findOne({
+      let item = await Items.findOne({
         where: {
           id: req.body.item_id,
         },
       });
-      if (!itemExists) {
+      if (!item) {
         return res.send({
           success: false,
-          error: "Item doesnt exists",
+          error: "This item doesnt exists",
         });
       }
-      // Check it if favorite exists
-      const favoriteExists = await Favorites.findOne({
+      // if item doesnt exist return error
+      let cart = await Cart.findOne({
         where: {
           client_id: client.id,
           item_id: req.body.item_id,
         },
       });
-      if (favoriteExists) {
-        return res.send({
-          success: false,
-          error: "This favorite already exists",
+      if (!cart) {
+        cart = await Cart.create({
+          client_id: client.id,
+          item_id: req.body.item_id,
+          quantity: 1,
         });
+      } else {
+        cart.quantity = cart.quantity + 1;
+        cart.save();
       }
-      const favorite = await Favorites.create({
-        client_id: client.id,
-        item_id: req.body.item_id,
-      });
       return res.send({
         success: true,
-        favorite_id: favorite.id,
+        cart,
       });
     } catch (error) {
       return res.send({
         success: false,
-        error: error,
+        error: error.message,
       });
     }
   },
-  async deleteFavorite(req, res) {
+  async deleteCart(req, res) {
     try {
+      let remove;
       const authorizationHeader = req.headers.authorization;
       const token = authorizationHeader.replace("Bearer ", "");
       const client = jwt.decode(token, jwtSecret);
       if (!client) {
         return res.send({
           success: false,
+          error: error.message,
         });
       }
-      const favoriteRemoved = await Favorites.findOne({
+      let cart = await Cart.findOne({
         where: {
           client_id: client.id,
           item_id: req.params.item_id,
         },
       });
-      if (!favoriteRemoved) {
+      if (!cart) {
         return res.send({
           success: false,
-          error: "Favorite removed",
+          error: "Item Cart doesnt exist",
         });
       }
-      const remove = await Favorites.destroy({
-        where: {
-          item_id: req.params.item_id,
-          client_id: client.id,
-        },
-      });
+      if (cart.quantity > 1) {
+        cart.quantity = cart.quantity - 1;
+        cart.save();
+      } else {
+        remove = await Cart.destroy({
+          where: {
+            item_id: req.params.item_id,
+            client_id: client.id,
+            quantity: 1,
+          },
+        });
+      }
+
       return res.send({
         success: true,
         remove,

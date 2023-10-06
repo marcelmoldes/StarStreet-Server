@@ -1,4 +1,5 @@
 const { Sequelize, DataTypes } = require("sequelize");
+const { Comments } = require("./Comments");
 const { Images } = require("./Images");
 const sequelize = new Sequelize("StarStreet", "root", "password", {
   dialect: "mysql",
@@ -14,6 +15,11 @@ Items.hasMany(Images, {
   foreignKey: "item_id"
 })
 
+Items.hasMany(Comments, {
+  foreignKey: "item_id"
+})
+
 module.exports = {
   Items,
 };
+

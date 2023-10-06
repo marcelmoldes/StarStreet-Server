@@ -2,6 +2,9 @@ const { Items } = require("../models/Items");
 const { Favorites } = require("../models/Favorites.js");
 const jwt = require("jsonwebtoken");
 const { Images } = require("../models/Images");
+const { Comments } = require("../models/Comments.js");
+const { Clients } = require("../models/Clients.js");
+const { Cart } = require("../models/Cart.js");
 
 const jwtSecret = "290eu38f9hcefhsfaebesufbeaufeuyfgr8ygagtvdbkloigruoi";
 
@@ -31,20 +34,26 @@ module.exports = {
       });
     }
   },
+
   async getItem(req, res) {
     try {
       let item = await Items.findOne({
         where: {
           slug: req.params.slug,
         },
+        include: [
+          {
+            model: Images,
+          },
+          {
+            model: Comments,
+            include: {
+              model: Clients,
+              attributes: ["image_profile", "client_name", "createdAt"],
+            },
+          },
+        ],
       });
-
-      let images = await Images.findAll({
-        where: {
-          item_id: item.id,
-        },
-      });
-      item.setDataValue("images", images);
 
       let client;
       try {
@@ -54,6 +63,8 @@ module.exports = {
       } catch (error) {
         client = false;
       }
+
+
 
       let favoriteFound;
       if (client) {
@@ -79,3 +90,4 @@ module.exports = {
     }
   },
 };
+

@@ -13,6 +13,10 @@ require("./src/routes/clients.js")(app);
 require("./src/routes/categories.js")(app);
 require("./src/routes/items.js")(app);
 require("./src/routes/favorites.js")(app);
+require("./src/routes/comments.js")(app);
+require("./src/routes/cart.js")(app);
+
+
 
 
 

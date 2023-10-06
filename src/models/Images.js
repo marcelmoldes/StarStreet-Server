@@ -1,4 +1,5 @@
 const { Sequelize, DataTypes } = require("sequelize");
+
 const sequelize = new Sequelize("StarStreet", "root", "password", {
   dialect: "mysql",
 });
@@ -10,3 +11,5 @@ const Images = sequelize.define("images", {
 module.exports = {
   Images,
 };
+
+

@@ -64,7 +64,13 @@ module.exports = {
           where: {
             category_id: category.id,
           },
-          include: Images,
+          include: {
+            model: Images,
+          },
+          order: [
+            ['id', 'ASC'],
+            [Images, 'id', 'ASC']
+          ],
           attributes: {
             include: [
               [
@@ -84,7 +90,12 @@ module.exports = {
           where: {
             category_id: category.id,
           },
-          include: Images
+          order: [
+            [Images, 'id', 'ASC']
+          ],
+          include: {
+            model: Images,
+          },
         });
       }
       return res.send({
