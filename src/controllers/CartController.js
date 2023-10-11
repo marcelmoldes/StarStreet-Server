@@ -2,6 +2,7 @@ const { Cart } = require("../models/Cart.js");
 const jwt = require("jsonwebtoken");
 const jwtSecret = "290eu38f9hcefhsfaebesufbeaufeuyfgr8ygagtvdbkloigruoi";
 const { Items } = require("../models/Items.js");
+const { Images } = require("../models/Images.js");
 
 module.exports = {
   async getCart(req, res) {
@@ -20,6 +21,7 @@ module.exports = {
         },
         include: {
           model: Items,
+          include: Images,
         },
       });
       return res.send({
