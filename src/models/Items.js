@@ -6,7 +6,7 @@ const sequelize = new Sequelize("StarStreet", "root", "password", {
 });
 const Items = sequelize.define("items", {
   title: DataTypes.STRING,
-  price: DataTypes.STRING,
+  price: DataTypes.NUMBER,
   slug: DataTypes.STRING,
   category_id: DataTypes.NUMBER,
 });
