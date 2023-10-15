@@ -22,9 +22,9 @@ module.exports = {
         },
         include: {
           model: Items,
+
           include: {
             model: Images,
-            
           },
         },
       });

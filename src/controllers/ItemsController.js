@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 const { Images } = require("../models/Images");
 const { Comments } = require("../models/Comments.js");
 const { Clients } = require("../models/Clients.js");
-const { Cart } = require("../models/Cart.js");
+
 
 const jwtSecret = "290eu38f9hcefhsfaebesufbeaufeuyfgr8ygagtvdbkloigruoi";
 
