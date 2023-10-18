@@ -6,6 +6,7 @@ const { Comments } = require("../models/Comments.js");
 const { Clients } = require("../models/Clients.js");
 
 
+
 const jwtSecret = "290eu38f9hcefhsfaebesufbeaufeuyfgr8ygagtvdbkloigruoi";
 
 module.exports = {
@@ -51,7 +52,9 @@ module.exports = {
               model: Clients,
               attributes: ["image_profile", "client_name", "createdAt"],
             },
+
           },
+    
         ],
       });
 

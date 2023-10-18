@@ -5,6 +5,7 @@ const { Cart } = require("../models/Cart.js");
 const { Items } = require("../models/Items.js");
 const { Images } = require("../models/Images.js");
 const { OrderDetails } = require("../models/OrderDetails.js");
+const { Clients } = require("../models/Clients.js");
 
 module.exports = {
   async createOrder(req, res) {
@@ -42,12 +43,12 @@ module.exports = {
           title: cartItem.item.title,
           price: cartItem.item.price,
           quantity: cartItem.quantity,
-        }
+        };
         await OrderDetails.create(orderDetail);
-        subtotal = subtotal + (cartItem.quantity * cartItem.item.price)
-        shipping = shipping + (cartItem.quantity * 5)
+        subtotal = subtotal + cartItem.quantity * cartItem.item.price;
+        shipping = shipping + cartItem.quantity * 5;
       }
-      taxes = Math.round(subtotal * .1)
+      taxes = Math.round(subtotal * 0.1);
       total = subtotal + taxes + shipping;
 
       order.subtotal = subtotal;
@@ -67,7 +68,7 @@ module.exports = {
       });
     }
   },
-  async getOrder(req, res) {
+  async getOrders(req, res) {
     try {
       const authorizationHeader = req.headers.authorization;
       const token = authorizationHeader.replace("Bearer ", "");
@@ -77,10 +78,14 @@ module.exports = {
           success: false,
         });
       }
-      const order = await Orders.findAll({
+      const orders = await Orders.findAll({
         where: {
           client_id: client.id,
         },
+        include: {
+          model: Clients,
+        },
+
         include: {
           model: Items,
           include: Images,
@@ -88,7 +93,7 @@ module.exports = {
       });
       return res.send({
         success: true,
-        order,
+        orders,
       });
     } catch (error) {
       return res.send({

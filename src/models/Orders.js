@@ -1,7 +1,10 @@
 const { Sequelize, DataTypes } = require("sequelize");
+const { Clients } = require("./Clients.js");
+const { Items } = require("./Items.js");
 const sequelize = new Sequelize("StarStreet", "root", "password", {
   dialect: "mysql",
 });
+
 
 
 const Orders = sequelize.define("orders", {
@@ -21,10 +24,23 @@ const Orders = sequelize.define("orders", {
   subtotal: DataTypes.NUMBER,
   taxes: DataTypes.NUMBER,
   shipping: DataTypes.NUMBER,
+ 
 
 });
+  
 
 
+
+Orders.belongsTo(Items, {
+  foreignKey: {
+    name: "client_id"
+  }
+})
+Orders.belongsTo(Clients, {
+  foreignKey: {
+    name: "client_id"
+  }
+})
 
 
 
