@@ -1,11 +1,9 @@
 const { Sequelize, DataTypes } = require("sequelize");
 const { Clients } = require("./Clients.js");
-const { Items } = require("./Items.js");
+const { OrderDetails } = require("./OrderDetails.js");
 const sequelize = new Sequelize("StarStreet", "root", "password", {
   dialect: "mysql",
 });
-
-
 
 const Orders = sequelize.define("orders", {
   email: DataTypes.STRING,
@@ -24,16 +22,11 @@ const Orders = sequelize.define("orders", {
   subtotal: DataTypes.NUMBER,
   taxes: DataTypes.NUMBER,
   shipping: DataTypes.NUMBER,
- 
-
 });
   
-
-
-
-Orders.belongsTo(Items, {
+Orders.hasMany(OrderDetails, {
   foreignKey: {
-    name: "client_id"
+    name: "order_id"
   }
 })
 Orders.belongsTo(Clients, {
@@ -41,11 +34,6 @@ Orders.belongsTo(Clients, {
     name: "client_id"
   }
 })
-
-
-
-
-
 
 module.exports = {
   Orders,
