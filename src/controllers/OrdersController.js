@@ -80,10 +80,7 @@ module.exports = {
         });
       }
 
-      const order = await Orders.findOne({
-        where: {
-          client_id: client.id,
-        },
+      const order = await Orders.findByPk(req.params.id, {
         include: [
           {
             model: Clients,

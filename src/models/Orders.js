@@ -22,6 +22,7 @@ const Orders = sequelize.define("orders", {
   subtotal: DataTypes.NUMBER,
   taxes: DataTypes.NUMBER,
   shipping: DataTypes.NUMBER,
+
 });
   
 Orders.hasMany(OrderDetails, {
