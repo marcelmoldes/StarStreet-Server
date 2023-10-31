@@ -13,7 +13,7 @@ const OrderDetails = sequelize.define("order_details", {
 });
 
 OrderDetails.belongsTo(Items, {
-  foreignKey: "item_id"
+  foreignKey: "item_id",
 });
 
 module.exports = {

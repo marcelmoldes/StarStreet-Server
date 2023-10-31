@@ -68,8 +68,8 @@ module.exports = {
             model: Images,
           },
           order: [
-            ['id', 'ASC'],
-            [Images, 'id', 'ASC']
+            ["id", "ASC"],
+            [Images, "id", "ASC"],
           ],
           attributes: {
             include: [
@@ -90,9 +90,7 @@ module.exports = {
           where: {
             category_id: category.id,
           },
-          order: [
-            [Images, 'id', 'ASC']
-          ],
+          order: [[Images, "id", "ASC"]],
           include: {
             model: Images,
           },

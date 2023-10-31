@@ -11,5 +11,3 @@ const Images = sequelize.define("images", {
 module.exports = {
   Images,
 };
-
-

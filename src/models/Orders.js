@@ -22,19 +22,18 @@ const Orders = sequelize.define("orders", {
   subtotal: DataTypes.NUMBER,
   taxes: DataTypes.NUMBER,
   shipping: DataTypes.NUMBER,
-
 });
-  
+
 Orders.hasMany(OrderDetails, {
   foreignKey: {
-    name: "order_id"
-  }
-})
+    name: "order_id",
+  },
+});
 Orders.belongsTo(Clients, {
   foreignKey: {
-    name: "client_id"
-  }
-})
+    name: "client_id",
+  },
+});
 
 module.exports = {
   Orders,

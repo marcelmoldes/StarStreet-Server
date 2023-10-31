@@ -13,17 +13,13 @@ const Items = sequelize.define("items", {
 });
 
 Items.hasMany(Images, {
-  foreignKey: "item_id"
-})
+  foreignKey: "item_id",
+});
 
 Items.hasMany(Comments, {
-  foreignKey: "item_id"
-})
-
-
-
+  foreignKey: "item_id",
+});
 
 module.exports = {
   Items,
 };
-

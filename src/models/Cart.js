@@ -11,13 +11,10 @@ const Cart = sequelize.define("carts", {
 });
 
 Cart.belongsTo(Items, {
-    foreignKey: {
-      name: "item_id"
-    }
-  })
-  
-  
-
+  foreignKey: {
+    name: "item_id",
+  },
+});
 
 module.exports = {
   Cart,
