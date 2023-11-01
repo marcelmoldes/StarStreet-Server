@@ -80,7 +80,7 @@ module.exports = {
         });
       }
 
-      const orderDetails = await Orders.findByPk(req.params.id, {
+      const order = await Orders.findByPk(req.params.id, {
         include: [
           {
             model: Clients,
@@ -97,7 +97,7 @@ module.exports = {
 
       return res.send({
         success: true,
-        orderDetails,
+        order,
       });
     } catch (error) {
       return res.send({
