@@ -5,13 +5,19 @@ const sequelize = new Sequelize("StarStreet", "root", "password", {
 });
 
 const Clients = sequelize.define("clients", {
-  client_name: DataTypes.STRING,
   email: DataTypes.STRING,
   password: DataTypes.STRING,
-  image_profile: DataTypes.STRING
+  image_profile: DataTypes.STRING,
+  first_name: DataTypes.STRING,
+  last_name: DataTypes.STRING,
+  address: DataTypes.STRING,
+  city: DataTypes.STRING,
+  state: DataTypes.STRING,
+  postal_code: DataTypes.NUMBER,
+  country_code: DataTypes.STRING,
+  phone_number: DataTypes.NUMBER,
 });
 
 module.exports = {
   Clients,
 };
-

@@ -7,13 +7,13 @@ const sequelize = new Sequelize("StarStreet", "root", "password", {
 
 const Orders = sequelize.define("orders", {
   email: DataTypes.STRING,
-  full_name: DataTypes.STRING,
+  first_name: DataTypes.STRING,
+  last_name: DataTypes.STRING,
   card_number: DataTypes.NUMBER,
   expiration_date: DataTypes.NUMBER,
   cvc: DataTypes.NUMBER,
   address: DataTypes.STRING,
   city: DataTypes.STRING,
-  province: DataTypes.STRING,
   postal_code: DataTypes.NUMBER,
   card_name: DataTypes.STRING,
   phone: DataTypes.NUMBER,
@@ -22,6 +22,8 @@ const Orders = sequelize.define("orders", {
   subtotal: DataTypes.NUMBER,
   taxes: DataTypes.NUMBER,
   shipping: DataTypes.NUMBER,
+  state: DataTypes.STRING,
+  shipping: DataTypes.STRING,
 });
 
 Orders.hasMany(OrderDetails, {

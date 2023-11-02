@@ -13,7 +13,8 @@ module.exports = {
 
       const clientFound = await Clients.findOne({
         where: {
-          client_name: req.body.client_name,
+          first_name: req.body.first_name,
+          last_name: req.body.last_name,
         },
       });
 
@@ -23,7 +24,8 @@ module.exports = {
           error: "This user already exists!",
         });
       } else {
-        const client = await Clients.create(req.body);
+        const client = await Clients.create(req.body)
+
         return res.send({
           success: true,
           client,
