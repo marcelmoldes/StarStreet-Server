@@ -7,7 +7,7 @@ const sequelize = new Sequelize("StarStreet", "root", "password", {
 const Clients = sequelize.define("clients", {
   email: DataTypes.STRING,
   password: DataTypes.STRING,
-  image_profile: DataTypes.STRING,
+  profile_image: DataTypes.STRING,
   first_name: DataTypes.STRING,
   last_name: DataTypes.STRING,
   address: DataTypes.STRING,
@@ -15,7 +15,7 @@ const Clients = sequelize.define("clients", {
   state: DataTypes.STRING,
   postal_code: DataTypes.NUMBER,
   country_code: DataTypes.STRING,
-  phone_number: DataTypes.NUMBER,
+  phone: DataTypes.NUMBER,
 });
 
 module.exports = {
