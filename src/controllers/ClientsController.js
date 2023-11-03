@@ -24,13 +24,49 @@ module.exports = {
           error: "This user already exists!",
         });
       } else {
-        const client = await Clients.create(req.body)
+        const client = await Clients.create(req.body);
 
         return res.send({
           success: true,
           client,
         });
       }
+    } catch (error) {
+      return res.send({
+        success: false,
+        error: error.message,
+      });
+    }
+  },
+
+  async updateClient(req, res) {
+    try {
+      const authorizationHeader = req.headers.authorization;
+      const token = authorizationHeader.replace("Bearer ", "");
+      const client = jwt.decode(token, jwtSecret);
+
+      const clientFound = await Clients.findByPk(req.params.id);
+      if (client.role !== "admin" && client.id !== clientFound.id) {
+        return res.send({
+          success: false,
+          error: "Access denied",
+        });
+      }
+      clientFound.first_name = req.body.first_name;
+      clientFound.last_name = req.body.last_name;
+      clientFound.email = req.body.email;
+      clientFound.address = req.body.address;
+      clientFound.city = req.body.city;
+      clientFound.state = req.body.state;
+      clientFound.postal_code = req.body.postal_code;
+      clientFound.country_code = req.body.country_code;
+      clientFound.phone = req.body.phone;
+      clientFound.save();
+
+      return res.send({
+        success: true,
+        client: clientFound,
+      });
     } catch (error) {
       return res.send({
         success: false,
@@ -55,10 +91,21 @@ module.exports = {
   },
   async getClient(req, res) {
     try {
-      const client = await Clients.findByPk(req.params.id);
+      const authorizationHeader = req.headers.authorization;
+      const token = authorizationHeader.replace("Bearer ", "");
+      const client = jwt.decode(token, jwtSecret);
+
+      const clientFound = await Clients.findByPk(req.params.id);
+      if (client.role !== "admin" && client.id !== clientFound.id) {
+        return res.send({
+          success: false,
+          error: "Access denied",
+        });
+      }
+    
       return res.send({
         success: true,
-        client,
+        client: clientFound,
       });
     } catch (error) {
       return res.send({
