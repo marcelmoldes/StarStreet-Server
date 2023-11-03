@@ -75,6 +75,39 @@ module.exports = {
     }
   },
 
+  async changePassword(req, res) {
+    try {
+      const authorizationHeader = req.headers.authorization;
+      const token = authorizationHeader.replace("Bearer ", "");
+      const client = jwt.decode(token, jwtSecret);
+
+      const clientFound = await Clients.findByPk(req.params.id);
+      if (client.role !== "admin" && client.id !== clientFound.id) {
+        return res.send({
+          success: false,
+          error: "Access denied",
+        });
+      }
+      if(clientFound.password !== req.body.currentPassword) {
+        return res.send({
+          success: false,
+          error: "You must provide your current password",
+        });
+      }
+      clientFound.password = req.body.newPassword;
+      clientFound.save();
+
+      return res.send({
+        success: true,
+      });
+    } catch (error) {
+      return res.send({
+        success: false,
+        error: error.message,
+      });
+    }
+  },
+
   async getClients(req, res) {
     try {
       const clients = await Clients.findAll();
