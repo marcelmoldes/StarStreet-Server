@@ -50,7 +50,7 @@ module.exports = {
             model: Comments,
             include: {
               model: Clients,
-              attributes: ["image_profile", "first_name","last_name", "createdAt"],
+              attributes: ["profile_image", "first_name","last_name", "createdAt"],
             },
 
           },
