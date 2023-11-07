@@ -6,6 +6,7 @@ const { Items } = require("../models/Items.js");
 const { Images } = require("../models/Images.js");
 const { OrderDetails } = require("../models/OrderDetails.js");
 const { Clients } = require("../models/Clients.js");
+const { Op } = require("sequelize");
 
 module.exports = {
   async createOrder(req, res) {
@@ -43,6 +44,7 @@ module.exports = {
           title: cartItem.item.title,
           price: cartItem.item.price,
           quantity: cartItem.quantity,
+          shipping_status: "Not shipped"
         };
         await OrderDetails.create(orderDetail);
         subtotal = subtotal + cartItem.quantity * cartItem.item.price;
@@ -107,7 +109,7 @@ module.exports = {
     }
   },
 
-  async getOrders(req, res) {
+  async getOrderHistory(req, res) {
     try {
       const authorizationHeader = req.headers.authorization;
       const token = authorizationHeader.replace("Bearer ", "");
@@ -137,6 +139,93 @@ module.exports = {
       return res.send({
         success: true,
         orders,
+      });
+    } catch (error) {
+      return res.send({
+        success: false,
+        error: error.message,
+      });
+    }
+  },
+
+  async getOrders(req, res) {
+    try {
+      const authorizationHeader = req.headers.authorization;
+      const token = authorizationHeader.replace("Bearer ", "");
+      const client = jwt.decode(token, jwtSecret);
+      if (!client || client.role !== 'admin') {
+        return res.send({
+          success: false,
+        });
+      }
+      const orders = await Orders.findAll({
+        include: [
+          {
+            model: Clients,
+          },
+          {
+            model: OrderDetails,
+            include: {
+              model: Items,
+              include: Images,
+            },
+          },
+        ],
+      });
+      return res.send({
+        success: true,
+        orders,
+      });
+    } catch (error) {
+      return res.send({
+        success: false,
+        error: error.message,
+      });
+    }
+  },
+
+  async getStats(req, res) {
+    try {
+      const authorizationHeader = req.headers.authorization;
+      const token = authorizationHeader.replace("Bearer ", "");
+      const client = jwt.decode(token, jwtSecret);
+      if (!client || client.role !== 'admin') {
+        return res.send({
+          success: false,
+        });
+      }
+
+      const startOfMonth = new Date();
+      startOfMonth.setDate(1);
+      startOfMonth.setHours(0, 0, 0, 0)
+
+      const where = {
+        createdAt: {
+          [Op.gt]: startOfMonth
+        }
+      }
+      const orderCount = await Orders.count({
+        where
+      });
+      const revenue = await Orders.sum('total', {
+        where
+      });
+      const clients = await Orders.count({
+        distinct: true,
+        col: 'client_id',
+        where
+      });
+
+      const stats = {
+        revenue,
+        orders: orderCount,
+        clients,
+        average_order_value: Math.round(revenue / orderCount),
+        sales_history: []
+      }
+      return res.send({
+        success: true,
+        stats,
       });
     } catch (error) {
       return res.send({
