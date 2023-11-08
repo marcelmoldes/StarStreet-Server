@@ -44,7 +44,7 @@ module.exports = {
           title: cartItem.item.title,
           price: cartItem.item.price,
           quantity: cartItem.quantity,
-          shipping_status: "Not shipped"
+          shipping_status: "Not shipped",
         };
         await OrderDetails.create(orderDetail);
         subtotal = subtotal + cartItem.quantity * cartItem.item.price;
@@ -109,6 +109,36 @@ module.exports = {
     }
   },
 
+  async updateOrder(req, res) {
+    try {
+      const authorizationHeader = req.headers.authorization;
+      const token = authorizationHeader.replace("Bearer ", "");
+      const client = jwt.decode(token, jwtSecret);
+
+      if (!client || client.role !== "admin") {
+        return res.send({
+          success: false,
+        });
+      }
+      const order = await Orders.findByPk(req.params.id);
+      order.shipping_status = req.body.shipping_status;
+      order.shipping_company = req.body.shipping_company;
+      order.tracking_number = req.body.tracking_number;
+
+      await order.save();
+
+      return res.send({
+        success: true,
+        order,
+      });
+    } catch (error) {
+      return res.send({
+        success: false,
+        error: error.message,
+      });
+    }
+  },
+
   async getOrderHistory(req, res) {
     try {
       const authorizationHeader = req.headers.authorization;
@@ -153,7 +183,7 @@ module.exports = {
       const authorizationHeader = req.headers.authorization;
       const token = authorizationHeader.replace("Bearer ", "");
       const client = jwt.decode(token, jwtSecret);
-      if (!client || client.role !== 'admin') {
+      if (!client || client.role !== "admin") {
         return res.send({
           success: false,
         });
@@ -189,7 +219,7 @@ module.exports = {
       const authorizationHeader = req.headers.authorization;
       const token = authorizationHeader.replace("Bearer ", "");
       const client = jwt.decode(token, jwtSecret);
-      if (!client || client.role !== 'admin') {
+      if (!client || client.role !== "admin") {
         return res.send({
           success: false,
         });
@@ -197,23 +227,23 @@ module.exports = {
 
       const startOfMonth = new Date();
       startOfMonth.setDate(1);
-      startOfMonth.setHours(0, 0, 0, 0)
+      startOfMonth.setHours(0, 0, 0, 0);
 
       const where = {
         createdAt: {
-          [Op.gt]: startOfMonth
-        }
-      }
+          [Op.gt]: startOfMonth,
+        },
+      };
       const orderCount = await Orders.count({
-        where
+        where,
       });
-      const revenue = await Orders.sum('total', {
-        where
+      const revenue = await Orders.sum("total", {
+        where,
       });
       const clients = await Orders.count({
         distinct: true,
-        col: 'client_id',
-        where
+        col: "client_id",
+        where,
       });
 
       const stats = {
@@ -221,8 +251,8 @@ module.exports = {
         orders: orderCount,
         clients,
         average_order_value: Math.round(revenue / orderCount),
-        sales_history: []
-      }
+        sales_history: [],
+      };
       return res.send({
         success: true,
         stats,

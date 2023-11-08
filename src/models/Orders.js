@@ -26,6 +26,8 @@ const Orders = sequelize.define("orders", {
   shipping_status: DataTypes.STRING,
   shipping_company: DataTypes.STRING,
   tracking_number: DataTypes.STRING,
+  order_number: DataTypes.NUMBER
+  
 });
 
 Orders.hasMany(OrderDetails, {

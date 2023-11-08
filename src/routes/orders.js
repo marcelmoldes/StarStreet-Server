@@ -7,4 +7,5 @@ module.exports = (app) => {
   app.get("/orders/history", OrdersController.getOrderHistory);
   app.get("/orders/stats", OrdersController.getStats);
   app.get("/orders/:id", OrdersController.getOrder);
+  app.put("/admin/order/:id", OrdersController.updateOrder)
 };
