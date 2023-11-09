@@ -124,6 +124,15 @@ module.exports = {
       order.shipping_status = req.body.shipping_status;
       order.shipping_company = req.body.shipping_company;
       order.tracking_number = req.body.tracking_number;
+      order.first_name = req.body.first_name;
+      order.last_name = req.body.last_name;
+      order.address = req.body.address;
+      order.city = req.body.city;
+      order.state = req.body.state;
+      order.email = req.body.email;
+      order.phone = req.body.phone;
+      order.order_number = req.body.order_number;
+      order.createdAt = req.body.createdAt;
 
       await order.save();
 
@@ -141,10 +150,10 @@ module.exports = {
 
   async getOrderHistory(req, res) {
     try {
-      const authorizationHeader = req.headers.authorization;
+   const authorizationHeader = req.headers.authorization;
       const token = authorizationHeader.replace("Bearer ", "");
       const client = jwt.decode(token, jwtSecret);
-      if (!client) {
+      if (!client || client.role !== "admin") {
         return res.send({
           success: false,
         });
