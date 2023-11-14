@@ -1,8 +1,8 @@
-var express = require("express");
-var cors = require("cors");
-var cookieParser = require("cookie-parser");
-var bodyParser = require("body-parser");
-var app = express();
+const express = require("express");
+const cors = require("cors");
+const cookieParser = require("cookie-parser");
+const bodyParser = require("body-parser");
+const app = express();
 
 app.use(bodyParser.json());
 app.use(cors());

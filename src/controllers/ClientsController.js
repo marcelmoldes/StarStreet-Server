@@ -1,5 +1,6 @@
 const { Clients } = require("../models/Clients.js");
 const jwt = require("jsonwebtoken");
+const { Orders } = require("../models/Orders.js");
 const jwtSecret = "290eu38f9hcefhsfaebesufbeaufeuyfgr8ygagtvdbkloigruoi";
 
 module.exports = {
@@ -75,6 +76,7 @@ module.exports = {
     }
   },
 
+
   async changePassword(req, res) {
     try {
       const authorizationHeader = req.headers.authorization;
@@ -88,7 +90,7 @@ module.exports = {
           error: "Access denied",
         });
       }
-      if(clientFound.password !== req.body.currentPassword) {
+      if (clientFound.password !== req.body.currentPassword) {
         return res.send({
           success: false,
           error: "You must provide your current password",
@@ -122,6 +124,7 @@ module.exports = {
       });
     }
   },
+
   async getClient(req, res) {
     try {
       const authorizationHeader = req.headers.authorization;
@@ -135,7 +138,7 @@ module.exports = {
           error: "Access denied",
         });
       }
-    
+
       return res.send({
         success: true,
         client: clientFound,

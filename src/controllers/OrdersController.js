@@ -197,7 +197,14 @@ module.exports = {
           success: false,
         });
       }
+      let where = {}
+      if(req.query.client_id) {
+        where = {
+          client_id: req.query.client_id
+        }
+      }
       const orders = await Orders.findAll({
+        where,
         include: [
           {
             model: Clients,
