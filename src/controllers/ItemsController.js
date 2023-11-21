@@ -148,6 +148,7 @@ module.exports = {
       item.title = req.body.title;
       item.price = req.body.price;
       item.slug = req.body.slug;
+
       item.createdAt = req.body.createdAt;
       await item.save();
 
