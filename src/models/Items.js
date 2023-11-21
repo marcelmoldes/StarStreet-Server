@@ -10,6 +10,7 @@ const Items = sequelize.define("items", {
   price: DataTypes.NUMBER,
   slug: DataTypes.STRING,
   category_id: DataTypes.NUMBER,
+  item_number: DataTypes.NUMBER
 });
 
 Items.hasMany(Images, {

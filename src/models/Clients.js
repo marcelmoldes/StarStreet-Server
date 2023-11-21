@@ -16,7 +16,8 @@ const Clients = sequelize.define("clients", {
   postal_code: DataTypes.NUMBER,
   country_code: DataTypes.STRING,
   phone: DataTypes.NUMBER,
-  role:DataTypes.STRING
+  role:DataTypes.STRING,
+  client_number: DataTypes.NUMBER
 });
 
 module.exports = {
