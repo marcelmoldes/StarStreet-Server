@@ -41,9 +41,8 @@ async function createClients(numberOfClients) {
       }),
       role: role,
     });
-    console.log(`Created client ${client.first_name} ${client.last_name}`);
   }
   process.exit();
 }
 
-createClients(10);
+createClients(100);
