@@ -15,6 +15,7 @@ require("./src/routes/items.js")(app);
 require("./src/routes/favorites.js")(app);
 require("./src/routes/comments.js")(app);
 require("./src/routes/orders.js")(app);
+require("./src/routes/admin.js")(app);
 
 require("./src/routes/cart.js")(app);
 
