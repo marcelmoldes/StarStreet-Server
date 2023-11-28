@@ -9,7 +9,7 @@ const sequelize = new Sequelize("StarStreet", "root", "password", {
 const jwt = require("jsonwebtoken");
 const { Images } = require("../models/Images.js");
 
-const jwtSecret = "290eu38f9hcefhsfaebesufbeaufeuyfgr8ygagtvdbkloigruoi";
+const jwtSecret = process.env.JWT_SECRET;
 
 module.exports = {
   async createCategory(req, res) {
@@ -67,6 +67,7 @@ module.exports = {
           },
           include: {
             model: Images,
+            
           },
           order: [
             ["id", "ASC"],

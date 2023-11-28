@@ -1,7 +1,7 @@
 const { Comments } = require("../models/Comments.js");
 const { Items } = require("../models/Items.js");
 const jwt = require("jsonwebtoken");
-const jwtSecret = "290eu38f9hcefhsfaebesufbeaufeuyfgr8ygagtvdbkloigruoi";
+const jwtSecret = process.env.JWT_SECRET;
 
 module.exports = {
   async createComment(req, res) {

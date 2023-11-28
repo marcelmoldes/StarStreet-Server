@@ -5,7 +5,7 @@ const { Images } = require("../models/Images");
 const { Comments } = require("../models/Comments.js");
 const { Clients } = require("../models/Clients.js");
 
-const jwtSecret = "290eu38f9hcefhsfaebesufbeaufeuyfgr8ygagtvdbkloigruoi";
+const jwtSecret = process.env.JWT_SECRET;
 
 module.exports = {
   async createItem(req, res) {

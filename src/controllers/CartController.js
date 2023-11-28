@@ -1,6 +1,6 @@
 const { Cart } = require("../models/Cart.js");
 const jwt = require("jsonwebtoken");
-const jwtSecret = "290eu38f9hcefhsfaebesufbeaufeuyfgr8ygagtvdbkloigruoi";
+const jwtSecret = process.env.JWT_SECRET;
 const { Items } = require("../models/Items.js");
 const { Images } = require("../models/Images.js");
 

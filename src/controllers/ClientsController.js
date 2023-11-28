@@ -1,8 +1,10 @@
 const { Clients } = require("../models/Clients.js");
 const jwt = require("jsonwebtoken");
 const { Orders } = require("../models/Orders.js");
-const jwtSecret = "290eu38f9hcefhsfaebesufbeaufeuyfgr8ygagtvdbkloigruoi";
-
+const { email } = require("@vuelidate/validators");
+const jwtSecret = process.env.JWT_SECRET;
+const sgMail = require("@sendgrid/mail");
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 module.exports = {
   async createClient(req, res) {
     try {
@@ -62,6 +64,7 @@ module.exports = {
       clientFound.postal_code = req.body.postal_code;
       clientFound.country_code = req.body.country_code;
       clientFound.phone = req.body.phone;
+      clientFound.role = req.body.role
       clientFound.save();
 
       return res.send({
@@ -75,7 +78,6 @@ module.exports = {
       });
     }
   },
-
 
   async changePassword(req, res) {
     try {
@@ -173,6 +175,57 @@ module.exports = {
           error: "This password or email are incorrects",
         });
       }
+    } catch (error) {
+      return res.send({
+        success: false,
+        error: error.message,
+      });
+    }
+  },
+  async forgotPassword(req, res) {
+    try {
+      const client = await Clients.findOne({
+        where: {
+          email: req.body.email,
+        },
+      });
+      if (!client) {
+        return res.send({
+          success: false,
+          error: "This account does not exist, please try again",
+        });
+      }
+      const new_password = Math.random().toString(36).substring(2, 18);
+
+      client.password = new_password;
+      client.save();
+      const data = {
+        to: client.email,
+        from: "moldesmarcel41@gmail.com",
+      templateId: "d-f698d27f8c5f4bc7bf1b4b5c95cc1733",
+        personalizations: [
+          {
+            to: [{ email: client.email }],
+             dynamic_template_data: {
+              First_Name: client.first_name,
+              Password: client.password,
+            },
+          },
+        ],
+      };
+      try {
+        const result = await sgMail.send(data);
+      } catch (error) {
+        console.error(error);
+
+        if (error.response) {
+          console.error(error.response.body);
+        }
+      }
+      return res.send({
+        success: true,
+        new_password,
+      });
     } catch (error) {
       return res.send({
         success: false,

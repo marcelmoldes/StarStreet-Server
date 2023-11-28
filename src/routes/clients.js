@@ -6,7 +6,7 @@ module.exports = (app) => {
   app.post("/clients", ClientsController.createClient)
   app.put("/clients/:id", ClientsController.updateClient);
   app.post("/clients/:id/changePassword", ClientsController.changePassword);
-  app.post("/clients/login", ClientsController.login)
-
+  app.post("/clients/login", ClientsController.login);
+  app.post("/clients/:id/forgotPassword", ClientsController.forgotPassword)
 };
 

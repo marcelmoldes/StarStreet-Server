@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const jwtSecret = "290eu38f9hcefhsfaebesufbeaufeuyfgr8ygagtvdbkloigruoi";
+const jwtSecret = process.env.JWT_SECRET;
 const { Orders } = require("../models/Orders.js");
 const { faker } = require("@faker-js/faker");
 
@@ -8,13 +8,13 @@ async function createOrders(numberOfOrders) {
     truncate: true,
   });
   for (let i = 0; i < numberOfOrders; i++) {
-    const subtotal = faker.number.int({ min: 20, max: 300 })
-    const taxes = Math.round(subtotal * .1);
+    const subtotal = faker.number.int({ min: 20, max: 300 });
+    const taxes = Math.round(subtotal * 0.1);
     const shipping = 5;
     const total = subtotal + taxes + shipping;
     const createdAt = faker.date.past({
-        days: 365
-    })
+      days: 365,
+    });
     const order = await Orders.create({
       email: faker.internet.email(),
       first_name: faker.person.firstName(),
@@ -46,7 +46,7 @@ async function createOrders(numberOfOrders) {
       tracking_number: i + 1,
       order_number: i + 1,
       createdAt,
-      updatedAt: createdAt
+      updatedAt: createdAt,
     });
   }
   process.exit();

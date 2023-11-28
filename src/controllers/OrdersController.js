@@ -1,12 +1,14 @@
 const { Orders } = require("../models/Orders.js");
 const jwt = require("jsonwebtoken");
-const jwtSecret = "290eu38f9hcefhsfaebesufbeaufeuyfgr8ygagtvdbkloigruoi";
+const jwtSecret = process.env.JWT_SECRET;
 const { Cart } = require("../models/Cart.js");
 const { Items } = require("../models/Items.js");
 const { Images } = require("../models/Images.js");
 const { OrderDetails } = require("../models/OrderDetails.js");
 const { Clients } = require("../models/Clients.js");
 const { Op } = require("sequelize");
+const sgMail = require('@sendgrid/mail');
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 module.exports = {
   async createOrder(req, res) {
@@ -58,7 +60,27 @@ module.exports = {
       order.taxes = taxes;
       order.total = total;
       await order.save();
-
+      const data = {
+        to: order.email,
+        from: 'moldesmarcel41@gmail.com', 
+        templateId: 'd-c65d3ca8dac249438da38f2796601ee9',
+        personalizations: [{
+          to: [{ email: order.email }],
+          dynamic_template_data: {
+            First_Name: order.first_name,
+            Order_Number: order.id
+          }
+        }]
+      };
+      try {
+        await sgMail.send(data);
+      } catch (error) {
+        console.error(error);
+    
+        if (error.response) {
+          console.error(error.response.body)
+        }
+      }
       return res.send({
         success: true,
         order,
