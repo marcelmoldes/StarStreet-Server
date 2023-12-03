@@ -8,13 +8,39 @@ const sequelize = new Sequelize("StarStreet", "root", "password", {
 });
 const jwt = require("jsonwebtoken");
 const { Images } = require("../models/Images.js");
-
+const fileType = require("file-type");
 const jwtSecret = process.env.JWT_SECRET;
+
+function slugify(text) {
+  return text
+    .toString()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, "-")
+    .replace(/[^\w-]+/g, "")
+    .replace(/--+/g, "-");
+}
 
 module.exports = {
   async createCategory(req, res) {
     try {
+      req.body.slug = slugify(req.body.title);
+
+      const slugFound = await Categories.findOne({
+        where: {
+          slug: req.body.slug,
+        },
+      });
+      if (slugFound) {
+        return res.send({
+          success: false,
+          error: "Slug exists",
+        });
+      }
       const category = await Categories.create(req.body);
+
       return res.send({
         success: true,
         category,
@@ -67,7 +93,6 @@ module.exports = {
           },
           include: {
             model: Images,
-            
           },
           order: [
             ["id", "ASC"],
@@ -145,11 +170,25 @@ module.exports = {
           success: false,
         });
       }
+      req.body.slug = slugify(req.body.title);
       const category = await Categories.findByPk(req.params.id);
       category.title = req.body.title;
       category.slug = req.body.slug;
       category.description = req.body.description;
-
+      if (req.body.imageBase64) {
+        const fileData = req.body.imageBase64;
+        const fileName = `category-${category.id}`;
+        const folder = "./public/images";
+        const imagePath = base64Img.imgSync(fileData, folder, fileName);
+        const image = await Categories.findOne({
+          where: {
+            photo_url: req.body.photo_url,
+          },
+        });
+        category.photo_url =
+          "http://localhost:8081/categories/" + fileName + ".jpg";
+        await image.save();
+      }
       await category.save();
 
       return res.send({

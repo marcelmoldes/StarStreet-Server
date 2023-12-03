@@ -4,12 +4,28 @@ const jwt = require("jsonwebtoken");
 const { Images } = require("../models/Images");
 const { Comments } = require("../models/Comments.js");
 const { Clients } = require("../models/Clients.js");
-
+const base64Img = require("base64-img");
 const jwtSecret = process.env.JWT_SECRET;
+const fileType = require("file-type");
+
+function slugify(text) {
+  return text
+    .toString()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, '-')
+    .replace(/[^\w-]+/g, '')
+    .replace(/--+/g, '-')
+}
 
 module.exports = {
   async createItem(req, res) {
     try {
+
+      req.body.slug = slugify(req.body.title);
+
       const slugFound = await Items.findOne({
         where: {
           slug: req.body.slug,
@@ -21,7 +37,18 @@ module.exports = {
           error: "Slug exists",
         });
       }
+
       const item = await Items.create(req.body);
+      if (req.body.imageBase64) {
+        const fileData = req.body.imageBase64;
+        const fileName = `product-${item.id}`;
+        const folder = "./public/images";
+        const imagePath = base64Img.imgSync(fileData, folder, fileName);
+        const image = await Images.create({
+          url: "http://localhost:8081/images/" + fileName + ".jpg",
+          item_id: item.id,
+        });
+      }
       return res.send({
         success: true,
         item,
@@ -134,6 +161,9 @@ module.exports = {
     }
   },
   async updateItem(req, res) {
+
+    req.body.slug = slugify(req.body.title);
+
     try {
       const authorizationHeader = req.headers.authorization;
       const token = authorizationHeader.replace("Bearer ", "");
@@ -150,6 +180,19 @@ module.exports = {
       item.slug = req.body.slug;
 
       item.createdAt = req.body.createdAt;
+      if (req.body.imageBase64) {
+        const fileData = req.body.imageBase64;
+        const fileName = `product-${item.id}`;
+        const folder = "./public/images";
+        const imagePath = base64Img.imgSync(fileData, folder, fileName);
+        const image = await Images.findOne({
+          where: {
+            item_id: item.id,
+          },
+        });
+        image.url = "http://localhost:8081/images/" + fileName + ".jpg";
+        await image.save();
+      }
       await item.save();
 
       return res.send({
@@ -201,7 +244,9 @@ module.exports = {
           error: "Access denied",
         });
       }
-      const item = await Items.findByPk(req.params.id);
+      const item = await Items.findByPk(req.params.id, {
+        include: Images,
+      });
       return res.send({
         success: true,
         item,

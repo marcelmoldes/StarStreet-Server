@@ -5,6 +5,8 @@ const { email } = require("@vuelidate/validators");
 const jwtSecret = process.env.JWT_SECRET;
 const sgMail = require("@sendgrid/mail");
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+const fileType = require("file-type");
+const base64Img = require("base64-img");
 module.exports = {
   async createClient(req, res) {
     try {
@@ -64,8 +66,19 @@ module.exports = {
       clientFound.postal_code = req.body.postal_code;
       clientFound.country_code = req.body.country_code;
       clientFound.phone = req.body.phone;
-      clientFound.role = req.body.role
-      clientFound.save();
+      clientFound.role = req.body.role;
+
+      if (req.body.imageBase64) {
+        const fileData = req.body.imageBase64;
+        const fileName = `client-${client.id}`;
+        const folder = "./public/images";
+        const imagePath = base64Img.imgSync(fileData, folder, fileName);
+
+        clientFound.profile_image =
+          "http://localhost:8081/images/" + fileName + ".jpg";
+      }
+
+      await clientFound.save();
 
       return res.send({
         success: true,
@@ -202,11 +215,11 @@ module.exports = {
       const data = {
         to: client.email,
         from: "moldesmarcel41@gmail.com",
-      templateId: "d-f698d27f8c5f4bc7bf1b4b5c95cc1733",
+        templateId: "d-f698d27f8c5f4bc7bf1b4b5c95cc1733",
         personalizations: [
           {
             to: [{ email: client.email }],
-             dynamic_template_data: {
+            dynamic_template_data: {
               First_Name: client.first_name,
               Password: client.password,
             },
